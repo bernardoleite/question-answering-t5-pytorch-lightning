@@ -12,7 +12,7 @@ do
 	 --max_len_input 512 \
 	 --max_len_output 96 \
 	 --batch_size 32 \
-	 --max_epochs 6 \
+	 --max_epochs 10 \
 	 --patience 3 \
 	 --optimizer "AdamW" \
 	 --learning_rate 0.0001 \
