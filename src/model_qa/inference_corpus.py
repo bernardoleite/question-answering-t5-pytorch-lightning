@@ -16,10 +16,10 @@ import os
 import json
 import torch
 
-def generate(args, device, qamodel: T5FineTuner, tokenizer: T5Tokenizer,  answer: str, context: str) -> str:
+def generate(args, device, qamodel: T5FineTuner, tokenizer: T5Tokenizer,  question: str, context: str) -> str:
 
     source_encoding = tokenizer(
-        answer,
+        question,
         context,
         max_length=args.max_len_input,
         padding='max_length',
@@ -99,9 +99,9 @@ def run(args):
 
     # Read test data
     test_df = pd.read_pickle(args.test_df_path)
-    #test_df = test_df.sample(n=20) # to DELETEEEEEE !!!!!!!!!!!!!!
+    #test_df = test_df.sample(n=15) # to DELETEEEEEE !!!!!!!!!!!!!!
 
-    predictions = []
+    predictions = {}
 
     # Put model in gpu (if possible) or cpu (if not possible) for inference purpose
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -112,28 +112,24 @@ def run(args):
     start_time_generate = time.time()
     printcounter = 0
     for index, row in test_df.iterrows():
-        generated = generate(args, device, qamodel, t5_tokenizer, row['answer'], row['context'])
+        generated = generate(args, device, qamodel, t5_tokenizer, row['question'], row['context'])
 
-        predictions.append(
-            {'context': row['context'],
-            'gt_question': row['question'],
-            'answer': row['answer'],
-            'gen_question': generated} # to change !!!!!!!! what?
-        )
+        predictions[str(row['qa_id'])] = generated
+
         printcounter += 1
         if (printcounter == 400):
-            print(str(printcounter) + " questions have been generated.")
+            print(str(printcounter) + " answers have been generated.")
             printcounter = 0
         #show_result(generated, row['answer'], row['context'], row['question'])
 
-    print("All predictions are completed.")
-    print("Number of predictions (q-a-c triples): ", len(predictions))
+    print("All answer predictions are completed.")
+    print("Number of predictions (qa_id - answer pairs): ", len(predictions))
 
     end_time_generate = time.time()
     gen_total_time = end_time_generate - start_time_generate
     print("Inference time: ", gen_total_time)
 
-    # Save questions and answers to json file
+    # Save answers to json file
 
     #https://stackoverflow.com/questions/273192/how-can-i-safely-create-a-nested-directory
     prediction_json_path = args.predictions_save_path
@@ -156,22 +152,22 @@ def run(args):
 
 if __name__ == '__main__':
     # Initialize the Parser
-    parser = argparse.ArgumentParser(description = 'Generate questions and save them to json file.')
+    parser = argparse.ArgumentParser(description = 'Generate answers and save them to json file.')
 
     # Add arguments
-    parser.add_argument('-cmp','--checkpoint_model_path', type=str, metavar='', default="../../checkpoints/qa_en_t5_base_512_96_32_6_seed_42/model-epoch=00-val_loss=1.76.ckpt", required=False, help='Model folder checkpoint path.')
-    parser.add_argument('-psp','--predictions_save_path', type=str, metavar='', default="../../predictions/qa_en_t5_base_512_96_32_6_seed_42/model-epoch=00-val_loss=1.76/", required=False, help='Folder path to save predictions after inference.')
+    parser.add_argument('-cmp','--checkpoint_model_path', type=str, metavar='', default="../../checkpoints/qa_en_t5_base_512_96_32_10_seed_42/model-epoch=00-val_loss=0.32.ckpt", required=False, help='Model folder checkpoint path.')
+    parser.add_argument('-psp','--predictions_save_path', type=str, metavar='', default="../../predictions/qa_en_t5_base_512_96_32_10_seed_42/model-epoch=00-val_loss=0.32/", required=False, help='Folder path to save predictions after inference.')
     parser.add_argument('-tp','--test_df_path', type=str, metavar='', default="../../data/squad_en_original/processed/df_test_en.pkl", required=False, help='Test dataframe path.')
 
     parser.add_argument('-mn','--model_name', type=str, metavar='', default="t5-base", required=False, help='Model name.')
     parser.add_argument('-tn','--tokenizer_name', type=str, metavar='', default="t5-base", required=False, help='Tokenizer name.')
 
-    parser.add_argument('-bs','--batch_size', type=int, metavar='', default=32, required=True, help='Batch size.')
-    parser.add_argument('-mli','--max_len_input', type=int, metavar='', default=512, required=True, help='Max len input for encoding.')
-    parser.add_argument('-mlo','--max_len_output', type=int, metavar='', default=96, required=True, help='Max len output for encoding.')
+    parser.add_argument('-bs','--batch_size', type=int, metavar='', default=32, required=False, help='Batch size.')
+    parser.add_argument('-mli','--max_len_input', type=int, metavar='', default=512, required=False, help='Max len input for encoding.')
+    parser.add_argument('-mlo','--max_len_output', type=int, metavar='', default=96, required=False, help='Max len output for encoding.')
 
-    parser.add_argument('-nb','--num_beams', type=int, metavar='', default=5, required=True, help='Number of beams.')
-    parser.add_argument('-nrs','--num_return_sequences', type=int, metavar='', default=1, required=True, help='Number of returned sequences.')
+    parser.add_argument('-nb','--num_beams', type=int, metavar='', default=5, required=False, help='Number of beams.')
+    parser.add_argument('-nrs','--num_return_sequences', type=int, metavar='', default=1, required=False, help='Number of returned sequences.')
     parser.add_argument('-rp','--repetition_penalty', type=float, metavar='', default=1.0, required=False, help='Repetition Penalty.')
     parser.add_argument('-lp','--length_penalty', type=float, metavar='', default=1.0, required=False, help='Length Penalty.')
     parser.add_argument('-sv','--seed_value', type=int, default=42, metavar='', required=False, help='Seed value.')
