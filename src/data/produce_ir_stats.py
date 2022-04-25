@@ -29,13 +29,19 @@ feature_array = vectorizer.get_feature_names()
 
 top_n = 10
 
-print('tf_idf scores: \n', sorted(list(zip(vectorizer.get_feature_names(), X.sum(0).getA1())), key=lambda x: x[1], reverse=True)[:top_n])
+results_tf_idf = sorted(list(zip(vectorizer.get_feature_names(), X.sum(0).getA1())), key=lambda x: x[1], reverse=True)[:top_n]
+print('Highest TF-IDF values:')
+for elem in results_tf_idf:
+    print('%s, %.3f'  % (elem[0], elem[1]))
+#print('tf_idf scores: \n', sorted(list(zip(vectorizer.get_feature_names(), X.sum(0).getA1())), key=lambda x: x[1], reverse=True)[:top_n])
 
-# tf_idf scores : 
-# [('document', 1.4736296010332683), ('check', 0.6227660078332259), ('like', 0.6227660078332259)]
 print("\n")
 
-print('idf values: \n', sorted(list(zip(feature_array,vectorizer.idf_,)), key = lambda x: x[1], reverse=True)[:top_n])
+results_idf = sorted(list(zip(feature_array,vectorizer.idf_,)), key = lambda x: x[1], reverse=True)[:top_n]
+print('Highest IDF values:')
+for elem in results_idf:
+    print('%s, %.3f'  % (elem[0], elem[1]))
+#print('idf values: \n', sorted(list(zip(feature_array,vectorizer.idf_,)), key = lambda x: x[1], reverse=True)[:top_n])
 
 # idf values: 
 #  [('aim', 1.6931471805599454), ('capture', 1.6931471805599454), ('check', 1.6931471805599454)]
@@ -44,7 +50,12 @@ print("\n")
 vectorizer = CountVectorizer(stop_words='english')
 X = vectorizer.fit_transform(corpus)
 feature_array = vectorizer.get_feature_names()
-print('Frequency: \n', sorted(list(zip(vectorizer.get_feature_names(), X.sum(0).getA1())), key=lambda x: x[1], reverse=True)[:top_n])
+
+results_tf = sorted(list(zip(vectorizer.get_feature_names(), X.sum(0).getA1())), key=lambda x: x[1], reverse=True)[:top_n]
+print('Highest TF values:')
+for elem in results_tf:
+    print('%s, %d'  % (elem[0], elem[1]))
+#print('Frequency: \n', sorted(list(zip(vectorizer.get_feature_names(), X.sum(0).getA1())), key=lambda x: x[1], reverse=True)[:top_n])
 
 # Frequency: 
 #  [('document', 2), ('aim', 1), ('capture', 1)]
