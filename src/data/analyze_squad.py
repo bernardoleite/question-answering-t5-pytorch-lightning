@@ -5,10 +5,10 @@ import sys
 sys.path.append('../')
 
  # Opening JSON file
-with open('../../data/squad_en_original/train-v1.1.json') as train_json_file:
+with open('../../data/squad_en_original/raw/train-v1.1.json') as train_json_file:
     train_data = json.load(train_json_file)
 
-with open('../../data/squad_en_original/dev-v1.1.json') as dev_json_file:
+with open('../../data/squad_en_original/raw/dev-v1.1.json') as dev_json_file:
     validation_data = json.load(dev_json_file)
 
 NR_CHAR = 0
@@ -27,7 +27,6 @@ for document in train_data["data"]:
             train_all_compiled.append([context, qa["question"], qa["answers"][0]["text"]])
 train_df = pd.DataFrame(train_all_compiled, columns = ['context', 'question', 'answer'])
 print("Nr of total chars for TRAIN ONLY: ", NR_CHAR)
-
 
 val_all_compiled = []
 for document in validation_data["data"]:

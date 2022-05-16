@@ -3,11 +3,11 @@
 for ((i=42; i <= 42; i++))
 do
 	CUDA_VISIBLE_DEVICES=1 python inference_corpus.py \
-	 --checkpoint_model_path "../../checkpoints/qa_en_t5_base_512_96_32_10_seed_42/model-epoch=09-val_loss=0.49.ckpt" \
-	 --predictions_save_path "../../predictions/qa_en_t5_base_512_96_32_10_seed_42/model-epoch=09-val_loss=0.49/" \
-	 --test_df_path "../../data/squad_en_original/processed/df_test_en.pkl" \
-	 --model_name "t5-base" \
-	 --tokenizer_name "t5-base" \
+	 --checkpoint_model_path "../../checkpoints/qa_br_v2_ptt5_base_512_96_32_6_seed_42/model-epoch=02-val_loss=1.12.ckpt" \
+	 --predictions_save_path "../../predictions/qa_br_v2_ptt5_base_512_96_32_6_seed_42/model-epoch=02-val_loss=1.12/" \
+	 --test_df_path "../../data/squad_br_v2/dataframe/df_validation_br.pkl" \
+	 --model_name "unicamp-dl/ptt5-base-portuguese-vocab" \
+	 --tokenizer_name "unicamp-dl/ptt5-base-portuguese-vocab" \
 	 --batch_size 32 \
 	 --max_len_input 512 \
 	 --max_len_output 96 \

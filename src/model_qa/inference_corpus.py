@@ -37,7 +37,7 @@ def generate(args, device, qamodel: T5FineTuner, tokenizer: T5Tokenizer,  questi
         input_ids=input_ids,
         attention_mask=attention_mask,
         num_return_sequences=args.num_return_sequences, # defaults to 1
-        num_beams=args.num_beams, # defaults to 1 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! myabe experiment with 5
+        num_beams=args.num_beams, # defaults to 1 !!! myabe experiment with 5
         max_length=args.max_len_output,
         repetition_penalty=args.repetition_penalty, # defaults to 1.0, #last value was 2.5
         length_penalty=args.length_penalty, # defaults to 1.0
@@ -108,6 +108,9 @@ def run(args):
     qamodel = qamodel.to(device)
     print ("Device for inference:", device)
 
+    # bug fix, to delete afterwards!!!
+    test_df.rename(columns={'id': 'qa_id'}, inplace=True)
+
     # Generate questions and append predictions
     start_time_generate = time.time()
     printcounter = 0
@@ -156,7 +159,7 @@ if __name__ == '__main__':
 
     # Add arguments
     parser.add_argument('-cmp','--checkpoint_model_path', type=str, metavar='', default="../../checkpoints/qa_en_t5_base_512_96_32_10_seed_42/model-epoch=00-val_loss=0.32.ckpt", required=False, help='Model folder checkpoint path.')
-    parser.add_argument('-psp','--predictions_save_path', type=str, metavar='', default="../../predictions/qa_en_t5_base_512_96_32_10_seed_42/model-epoch=00-val_loss=0.32/", required=False, help='Folder path to save predictions after inference.')
+    parser.add_argument('-psp','--predictions_save_path', type=str, metavar='', default="../../predictions/qa_br_v2_ptt5_base_512_96_32_6_seed_42/model-epoch=00-val_loss=0.32/", required=False, help='Folder path to save predictions after inference.')
     parser.add_argument('-tp','--test_df_path', type=str, metavar='', default="../../data/squad_en_original/processed/df_test_en.pkl", required=False, help='Test dataframe path.')
 
     parser.add_argument('-mn','--model_name', type=str, metavar='', default="t5-base", required=False, help='Model name.')

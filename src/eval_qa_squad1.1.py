@@ -7,11 +7,15 @@ import argparse
 import json
 import sys
 
+LANG = "portuguese"
 
 def normalize_answer(s):
     """Lower text and remove punctuation, articles and extra whitespace."""
     def remove_articles(text):
-        return re.sub(r'\b(a|an|the)\b', ' ', text)
+        if LANG == 'portuguese':
+            return re.sub(r'\b(o|os|a|as|um|uns|uma|umas)\b', ' ', text)
+        else:
+            return re.sub(r'\b(a|an|the)\b', ' ', text)
 
     def white_space_fix(text):
         return ' '.join(text.split())
@@ -72,6 +76,7 @@ def evaluate(dataset, predictions):
 
     exact_match = 100.0 * exact_match / total
     f1 = 100.0 * f1 / total
+    print("total: ", total)
 
     return {'exact_match': round(exact_match,5), 'f1': round(f1,5)}
 
@@ -79,8 +84,8 @@ if __name__ == '__main__':
     expected_version = '1.1'
     parser = argparse.ArgumentParser(description='Evaluation for SQuAD ' + expected_version)
 
-    parser.add_argument('-tfp', '--test_file_path', type=str, metavar='', default="../data/squad_en_original/raw/dev-v1.1.json", required=False, help='Test json file path.')
-    parser.add_argument('-pf', '--predictions_file', type=str, metavar='', default="../predictions/qa_en_t5_base_512_96_32_10_seed_42/model-epoch=09-val_loss=0.49/predictions.json", required=False, help='Predictions json file path.')
+    parser.add_argument('-tfp', '--test_file_path', type=str, metavar='', default="../data/squad_en_original/raw/dev-v1.1-ovf.json", required=False, help='Test json file path.')
+    parser.add_argument('-pf', '--predictions_file', type=str, metavar='', default="../predictions/qa_en_t5_base_512_96_32_10_seed_42/model-epoch=00-val_loss=0.32/predictions.json", required=False, help='Predictions json file path.')
     args = parser.parse_args()
 
     # Open and read test file
