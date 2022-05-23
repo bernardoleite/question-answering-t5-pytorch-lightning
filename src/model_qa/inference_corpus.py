@@ -109,7 +109,7 @@ def run(args):
     print ("Device for inference:", device)
 
     # bug fix, to delete afterwards!!!
-    test_df.rename(columns={'id': 'qa_id'}, inplace=True)
+    #test_df.rename(columns={'id': 'qa_id'}, inplace=True)
 
     # Generate questions and append predictions
     start_time_generate = time.time()
@@ -159,8 +159,8 @@ if __name__ == '__main__':
 
     # Add arguments
     parser.add_argument('-cmp','--checkpoint_model_path', type=str, metavar='', default="../../checkpoints/qa_en_t5_base_512_96_32_10_seed_42/model-epoch=00-val_loss=0.32.ckpt", required=False, help='Model folder checkpoint path.')
-    parser.add_argument('-psp','--predictions_save_path', type=str, metavar='', default="../../predictions/qa_br_v2_ptt5_base_512_96_32_6_seed_42/model-epoch=00-val_loss=0.32/", required=False, help='Folder path to save predictions after inference.')
-    parser.add_argument('-tp','--test_df_path', type=str, metavar='', default="../../data/squad_en_original/processed/df_test_en.pkl", required=False, help='Test dataframe path.')
+    parser.add_argument('-psp','--predictions_save_path', type=str, metavar='', default="../../predictions/qa_en_t5_base_512_96_32_10_seed_42/model-epoch=00-val_loss=0.32/512-BM25/", required=False, help='Folder path to save predictions after inference.')
+    parser.add_argument('-tp','--test_df_path', type=str, metavar='', default="../../data/squad_en_original/processed/df_validation_en_filtered_512_BM25.pkl", required=False, help='Test dataframe path.')
 
     parser.add_argument('-mn','--model_name', type=str, metavar='', default="t5-base", required=False, help='Model name.')
     parser.add_argument('-tn','--tokenizer_name', type=str, metavar='', default="t5-base", required=False, help='Tokenizer name.')
