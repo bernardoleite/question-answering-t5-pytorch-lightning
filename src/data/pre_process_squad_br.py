@@ -6,11 +6,11 @@ import json
 import sys
 sys.path.append('../')
 
-squad_pt_train_name = 'squad-train-v1.1.json'
-squad_pt_val_name = 'squad-dev-v1.1.json'
+squad_pt_train_name = 'train-v1.1-pt.json'
+squad_pt_val_name = 'dev-v1.1-pt.json'
 
-squad_pt_train_path = '../../data/squad_br_v2/squad-train-v1.1.json'
-squad_pt_val_path = '../../data/squad_br_v2/squad-dev-v1.1.json'
+squad_pt_train_path = '../../data/squad_br_v2/raw/train-v1.1-pt.json'
+squad_pt_val_path = '../../data/squad_br_v2/raw/dev-v1.1-pt.json'
 
 files = [
     {"name": squad_pt_train_name, "path": squad_pt_train_path},
@@ -78,7 +78,7 @@ for file in files:
     new_dict['data'] = unique_entry_list
 
     file_name = 'processed-' + str(file["name"])
-    file_path = '../../data/squad_br_v2/' + file_name
+    file_path = '../../data/squad_br_v2/processed/' + file_name
 
     with open(file_path, 'w') as json_file:
         json.dump(new_dict, json_file)

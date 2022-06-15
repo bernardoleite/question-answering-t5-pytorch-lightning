@@ -4,8 +4,8 @@ import json
 import sys
 sys.path.append('../')
 
-squad_br_train_path = '../../data/squad_br_v2/processed-squad-train-v1.1.json'
-squad_br_val_path = '../../data/squad_br_v2/processed-squad-dev-v1.1.json'
+squad_br_train_path = '../../data/squad_br_v2/processed/processed-train-v1.1-pt.json'
+squad_br_val_path = '../../data/squad_br_v2/processed/processed-dev-v1.1-pt.json'
 
 # following tutorial...
 datasets = load_dataset('json', 
@@ -45,7 +45,7 @@ print("\n")
 print("Number of train QA-Paragrah pairs: ", len(train_df))
 print("Number of validation QA-Paragrah pairs: ", len(validation_df))
 
-train_df.to_pickle("../../data/squad_br_v2/dataframe/df_train_br.pkl")
-validation_df.to_pickle("../../data/squad_br_v2/dataframe/df_validation_br.pkl")
+train_df.to_pickle("../../data/squad_br_v2/processed/df_train_br.pkl")
+validation_df.to_pickle("../../data/squad_br_v2/processed/df_validation_br.pkl")
 
 print("\n","Pickles were generated from dataframes.")

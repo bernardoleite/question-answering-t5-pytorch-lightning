@@ -11,12 +11,9 @@ sys.path.append('../')
 from models import T5FineTuner
 
 import torch
-import pandas as pd
-import utils
 
 QUESTION = 'If Roman numerals were used, what would Super Bowl 50 have been called?'
 CONTEXT = """Super Bowl 50 was an American football game to determine the champion of the National Football League (NFL) for the 2015 season. The American Football Conference (AFC) champion Denver Broncos defeated the National Football Conference (NFC) champion Carolina Panthers 24–10 to earn their third Super Bowl title. The game was played on February 7, 2016, at Levi's Stadium in the San Francisco Bay Area at Santa Clara, California. As this was the 50th Super Bowl, the league emphasized the "golden anniversary" with various gold-themed initiatives, as well as temporarily suspending the tradition of naming each Super Bowl game with Roman numerals (under which the game would have been known as "Super Bowl L"), so that the logo could prominently feature the Arabic numerals 50."""
-GROUND_TRUTH_ANSWERS = []
 
 def generate(args, device, qamodel: T5FineTuner, tokenizer: T5Tokenizer,  question: str, context: str) -> str:
 
@@ -96,21 +93,10 @@ def run(args):
     output_predictions(predictions)
 
 def output_predictions(predictions):
-    table_results = pd.DataFrame(columns=['model_answer_prediction', 'model_rank_score', 'f1_score', 'exact_match_score'])
-    print("Text: ", CONTEXT, "\n")
-    print("Question: ", QUESTION, "\n")
+    print("CONTEXT: ", CONTEXT, "\n")
+    print("QUESTION: ", QUESTION, "\n")
     for index, pred in enumerate(predictions):
-        if len(GROUND_TRUTH_ANSWERS) > 0:
-            f1_score = utils.metric_max_over_ground_truths(utils.get_f1_score, pred, GROUND_TRUTH_ANSWERS)
-            exact_match_score = utils.metric_max_over_ground_truths(utils.get_exact_match_score, pred, GROUND_TRUTH_ANSWERS)
-        else: # there are no ground_truth answers available
-            f1_score = -1
-            exact_match_score = -1
-        table_results = table_results.append({'model_answer_prediction': pred, 'model_rank_score': index+1, 'f1_score': round(f1_score, 3), 'exact_match_score': exact_match_score*1}, ignore_index=True)
-        #print('BEAM: %d | ANSWER: %s | F1-SCORE: %.3f | EXACT-MATCH: %d'  % (index+1, pred, f1_score, exact_match_score))
-    print(table_results.to_string(index=False))
-    #save in csv...
-    #table_results.to_csv("out.csv", sep='\t', encoding='utf-8', index=False)
+        print("Answer prediction for model_returned_sequence %d: %s" % (index,pred))
 
 if __name__ == '__main__':
     # Initialize the Parser
@@ -125,8 +111,8 @@ if __name__ == '__main__':
     parser.add_argument('-mli','--max_len_input', type=int, metavar='', default=512, required=False, help='Max len input for encoding.')
     parser.add_argument('-mlo','--max_len_output', type=int, metavar='', default=96, required=False, help='Max len output for encoding.')
 
-    parser.add_argument('-nb','--num_beams', type=int, metavar='', default=15, required=False, help='Number of beams.')
-    parser.add_argument('-nrs','--num_return_sequences', type=int, metavar='', default=15, required=True, help='Number of returned sequences.')
+    parser.add_argument('-nb','--num_beams', type=int, metavar='', default=5, required=False, help='Number of beams.')
+    parser.add_argument('-nrs','--num_return_sequences', type=int, metavar='', default=2, required=False, help='Number of returned sequences.')
     parser.add_argument('-rp','--repetition_penalty', type=float, metavar='', default=1.0, required=False, help='Repetition Penalty.')
     parser.add_argument('-lp','--length_penalty', type=float, metavar='', default=1.0, required=False, help='Length Penalty.')
 

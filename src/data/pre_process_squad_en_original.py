@@ -43,18 +43,12 @@ validation_df = pd.DataFrame(validation_all_compiled, columns = ['document_title
 
 print("Validation Dataframe completed.")
 
-# In this case, test_df is the same as validation_df (test is not available from squad team)
-test_df = validation_df
-
-print("Test Dataframe completed.")
 print("\n")
 print("Number of train QA-Paragrah pairs: ", len(train_df))
 print("Number of validation QA-Paragrah pairs: ", len(validation_df))
-print("Number of test QA-Paragrah pairs: ", len(test_df))
 
 train_df.to_pickle("../../data/squad_en_original/processed/df_train_en.pkl")
 validation_df.to_pickle("../../data/squad_en_original/processed/df_validation_en.pkl")
-test_df.to_pickle("../../data/squad_en_original/processed/df_test_en.pkl")
 print("Pickles were generated from dataframes.")
 
 # Code for analyzing indivual example
