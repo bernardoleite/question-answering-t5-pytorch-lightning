@@ -164,7 +164,7 @@ If you have a suggestion that would make this better, please fork the repo and c
 
 ## License
 ### Project
-This project is released under the **MIT** license. For details, please see the file [LICENSE](https://github.com/bernardoleite/question-answering-t5-pytorch-lightning/blob/main/LICENSE) in the root directory.
+This project is released under the **MIT** license. For details, please see the file [LICENSE](https://github.com/bernardoleite/question-answering-t5-pytorch-lightning/blob/main/requirements.txt) in the root directory.
 
 ### Commercial Purposes
 A commercial license may also be available for use in industrial projects, collaborations or distributors of proprietary software that do not wish to use an open-source license. Please contact the author if you are interested.
