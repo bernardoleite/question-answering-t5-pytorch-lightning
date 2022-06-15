@@ -40,12 +40,12 @@ Current experiments use the SQuAD v1.1 dataset for English (original) and Portug
 2.  Create `squad_en_original/raw/` and `squad_en_original/processed/` foders inside `data/` and copy previous files to `data/squad_en_original/raw/`.
 3.  Go to `src/data`. By running `src/data/pre_process_squad_en_original.py` the following dataframes (pickle format) will be created inside `data/squad_en_original/processed/`: `df_train_en.pkl` and `df_validation_en.pkl`.
 
-* Example for pre-processing the **Portuguese** (machine-translated) SQuAD v1.1 dataset:
+* Example for preparing the **Portuguese** (machine-translated) SQuAD v1.1 dataset:
 1.  Download `train-v1.1-pt.json` and `dev-v1.1-pt.json` data from [here](https://github.com/nunorc/squad-v1.1-pt).
 2.  Create `squad_br_v2/raw` and `squad_br_v2/processed` folders inside `data/` and copy previous files to `data/squad_br_v2/raw/`.
 3.  Go to `src/data`. By running `src/data/pre_process_squad_br.py` and then `src/data/pre_process_squad_br_processed.py` the following dataframes (pickle format) will be created inside `data/squad_br_v2/processed/`: `df_train_br.pkl` and `df_validation_br.pkl`.
 
-**Important note**: Regardless of the data type, make sure the dataframe columns are: [**document_title**, **context**, **qa_id**, **question**, **answer**].
+**Important note**: Regardless of the data type, make sure the dataframe columns follow this scheme: [**document_title**, **context**, **qa_id**, **question**, **answer**].
 
 ### Training 
 1.  Go to `src/model_qa`. The file `train.py` is responsible for the training routine. Type the following command to read the description of the parameters:
