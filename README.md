@@ -146,7 +146,15 @@ Example/Demo:
     ```
 
 ### Evaluation 
-To do.
+1. Go to `src/`. The file `eval_qa_squad1.1.py` is responsible for the evaluation procedure given a certain **test_file_path** and **predictions_file**. Type the following command to read the description of the parameters:
+    ```bash
+    python eval_qa_squad1.1.py -h
+    ``` 
+2. Run `eval_qa_squad1.1.py` (e.g., using `"../data/squad_en_original/raw/dev-v1.1.json` as **test_file_path** and `"../predictions/qa_en_t5_base_512_96_32_10_seed_42/model-epoch=00-val_loss=0.32/predictions.json"` **predictions_file**)
+    ```bash
+    python eval_qa_squad1.1.py -tfp "../data/squad_en_original/raw/dev-v1.1.json" -pf "../predictions/qa_en_t5_base_512_96_32_10_seed_42/model-epoch=00-val_loss=0.32/predictions.json"
+    ``` 
+**Important note**: Set variable **LANG** to **"Portuguese"** or **"English"** for correct answer normalization.
 
 ## Issues and Usage Q&A
 To ask questions, report issues or request features, please use the GitHub Issue Tracker.
@@ -164,7 +172,7 @@ If you have a suggestion that would make this better, please fork the repo and c
 
 ## License
 ### Project
-This project is released under the **MIT** license. For details, please see the file [LICENSE](https://github.com/bernardoleite/question-answering-t5-pytorch-lightning/blob/main/requirements.txt) in the root directory.
+This project is released under the **MIT** license. For details, please see the file [LICENSE](https://github.com/bernardoleite/question-answering-t5-pytorch-lightning/blob/main/LICENSE) in the root directory.
 
 ### Commercial Purposes
 A commercial license may also be available for use in industrial projects, collaborations or distributors of proprietary software that do not wish to use an open-source license. Please contact the author if you are interested.

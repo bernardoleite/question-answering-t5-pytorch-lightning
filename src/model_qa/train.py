@@ -202,9 +202,9 @@ def run(args):
 
     # DELETE!!! JUST for FAST TESTING <----
     #####
-    #train_df = pd.read_csv('../../data/squad_experiments/squad_v1_train.csv')
-    #validation_df = pd.read_csv('../../data/squad_experiments/squad_v1_val.csv')
-    #test_df = pd.read_csv('../../data/squad_experiments/squad_v1_val.csv')
+    #train_df = train_df.sample(100, random_state=42)
+    #validation_df = validation_df.sample(10, random_state=42)
+    #test_df = validation_df.sample(10, random_state=42)
     #####
 
     data_module = QADataModule(params, t5_tokenizer, train_df, validation_df, test_df)
@@ -232,7 +232,7 @@ if __name__ == '__main__':
 
     parser.add_argument('-trp','--train_df_path', type=str, metavar='', default="../../data/squad_en_original/processed/df_train_en.pkl", required=False, help='Train dataframe path.')
     parser.add_argument('-vp','--validation_df_path', type=str, metavar='', default="../../data/squad_en_original/processed/df_validation_en.pkl", required=False, help='Validation dataframe path.')
-    parser.add_argument('-tp','--test_df_path', type=str, metavar='', default="../../data/squad_en_original/processed/df_test_en.pkl", required=False, help='Test dataframe path.')
+    parser.add_argument('-tp','--test_df_path', type=str, metavar='', default="../../data/squad_en_original/processed/df_validation_en.pkl", required=False, help='Test dataframe path.')
 
     parser.add_argument('-mli','--max_len_input', type=int, metavar='', default=64, required=False, help='Max len input for encoding.')
     parser.add_argument('-mlo','--max_len_output', type=int, metavar='', default=96, required=False, help='Max len output for encoding.')

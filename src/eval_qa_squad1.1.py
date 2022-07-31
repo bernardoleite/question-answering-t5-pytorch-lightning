@@ -1,4 +1,4 @@
-""" Official evaluation script for v1.1 of the SQuAD dataset. """
+""" Modified official evaluation script for v1.1 of the SQuAD dataset. Changes: added portuguese determinants in function normalize_answer()"""
 from __future__ import print_function
 from collections import Counter
 import string
@@ -80,8 +80,8 @@ if __name__ == '__main__':
     expected_version = '1.1'
     parser = argparse.ArgumentParser(description='Evaluation for SQuAD ' + expected_version)
 
-    parser.add_argument('-tfp', '--test_file_path', type=str, metavar='', default="../data/squad_br_v2/raw/dev-v1.1-filtered-NO-ANSWER.json", required=False, help='Test json file path.')
-    parser.add_argument('-pf', '--predictions_file', type=str, metavar='', default="../predictions/qa_br_v2_ptt5_base_512_96_32_6_seed_42/model-epoch=02-val_loss=1.12/predictions.json", required=False, help='Predictions json file path.')
+    parser.add_argument('-tfp', '--test_file_path', type=str, metavar='', default="../data/squad_en_original/raw/dev-v1.1.json", required=False, help='Test json file path.')
+    parser.add_argument('-pf', '--predictions_file', type=str, metavar='', default="../predictions/qa_en_t5_base_512_96_32_10_seed_42/model-epoch=00-val_loss=0.32/predictions.json", required=False, help='Predictions json file path.')
     args = parser.parse_args()
 
     # Open and read test file
