@@ -167,8 +167,8 @@ We present the model checkpoints and their corresponding results. We show the re
 | epoch=02_loss=1.12  |  val. corpus with translation errors (4084) |    PTT5-Base   |  Portuguese  |      26.81      |     55.16    |
 
 Links for model checkpoint download:
-- [epoch=00_loss=0.32](link)
-- [epoch=02_loss=1.12](link)
+- [epoch=00_loss=0.32](https://uporto-my.sharepoint.com/:u:/g/personal/up201404464_up_pt/Ec-fXMS0z5lIjNkaW3iJSycBF5qfnvHn3ASoRBmdwaTvXg?e=Jd31Oh)
+- [epoch=02_loss=1.12](https://uporto-my.sharepoint.com/:u:/g/personal/up201404464_up_pt/EWWwFQV18rNHklziNueuRM4BIJbzSRDtSeY4M6h_H0CIBQ?e=fEMfnB)
 
 ## Issues and Usage Q&A
 To ask questions, report issues or request features, please use the GitHub Issue Tracker.
