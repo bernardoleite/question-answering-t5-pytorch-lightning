@@ -3,7 +3,7 @@ import json
 import sys
 sys.path.append('../')
 
-MAX_LEN = 256
+MAX_LEN = 128
 
 from transformers import (
     T5Tokenizer
@@ -22,7 +22,7 @@ def tokenize_example(question, context):
         padding='max_length', 
         return_tensors="pt"
     )
-    return tokenized_inputs.overflowing_tokens[0].tolist()
+    return tokenized_inputs.overflowing_tokens[0], tokenized_inputs.overflowing_tokens[0].tolist()
 
  # Loading JSON files
 with open('../../data/squad_en_original/raw/dev-v1.1.json') as val_json_file:
@@ -43,16 +43,26 @@ for document in val_data["data"]:  # data -> document
             question = qa["question"]           # document -> paragraphs[i] -> qas[i] -> question
             answer = qa["answers"][0]["text"]   # document -> paragraphs[i] -> qas[i] -> answer
 
-            tokenized_inputs = tokenize_example(question, context)
+            ovf_tokens, tokenized_inputs = tokenize_example(question, context)
 
             if len(tokenized_inputs) > 0:
                 count_qas_filtered = count_qas_filtered + 1
                 qas_filtered_ids.append(qa_id)
+
+                tokens_ovf = t5_tokenizer.decode(ovf_tokens, skip_special_tokens=True, clean_up_tokenization_spaces=True)
+                
+                if answer == 'Super Bowl L':
+                    print(qa_id)
+                    print(context,"\n")
+                    print(question,"\n")
+                    print(answer, "\n")
+                    sys.exit()
+
+                print("\n")
     
             #val_all_compiled.append([document_title, context, qa_id, question, answer])
 
 #val_df = pd.DataFrame(val_all_compiled, columns = ['document_title', 'context', 'qa_id', 'question', 'answer'])
-
 val_data_filtered = val_data
 
 count_new_qas = 0

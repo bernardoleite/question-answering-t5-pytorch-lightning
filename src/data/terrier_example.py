@@ -1,20 +1,36 @@
 import pandas as pd
 import nltk
-import json
 import sys
-sys.path.append('../')
+import json
+import uuid
+
+MAX_LEN = 128
+
+# shift + alt + a
+import pyterrier as pt
+if not pt.started():
+  pt.init()
 
 from transformers import (
     T5Tokenizer
 )
 t5_tokenizer = T5Tokenizer.from_pretrained('t5-base')
 
-# shift + alt + a
-""" import pyterrier as pt
-if not pt.started():
-  pt.init() """
+def tokenize_example(question, context):
+    # tokenize inputs
+    tokenized_inputs = t5_tokenizer(
+        question,
+        context,
+        truncation = 'only_second',
+        add_special_tokens=True,
+        return_overflowing_tokens = True, # if (source_encoding.num_truncated_tokens.item() > 0): !!!!!!!! (future)
+        max_length=MAX_LEN, 
+        padding='max_length', 
+        return_tensors="pt"
+    )
+    return tokenized_inputs.overflowing_tokens[0].tolist()
 
-def close_sentences(document_title, question, sentences):    
+def top_results(document_title, question, sentences):    
     if len(sentences) > 0:
         nr_sents = len(sentences)
         list_docno_int = list(range(0, nr_sents))
@@ -29,16 +45,19 @@ def close_sentences(document_title, question, sentences):
     })
 
     try:
-        pd_indexer = pt.DFIndexer("./pd_index", overwrite=True, blocks=True)
+        path_index = "C:/Users/Bernardo/Desktop/GitHubRepos/qa-transformers-pytorch/src/data/terrier_indexes/" + str(uuid.uuid4().hex) + "/"
+        pd_indexer = pt.DFIndexer(path_index, overwrite=True, blocks=True)
         indexref2 = pd_indexer.index(df["sentences"], df["docno"])
 
         index = pt.IndexFactory.of(indexref2)
         #print(index.getCollectionStatistics().toString())
 
-        #new_answer = answer.replace("'", "")
-        topics = pd.DataFrame([["1", question]], columns=['qid', 'query'])
+        question_processed = question.replace("?", "")
+        question_processed = question_processed.replace("'", "")
+        question_processed = question_processed.replace("/", "")
+        topics = pd.DataFrame([["1", question_processed]], columns=['qid', 'query'])
 
-        retr = pt.BatchRetrieve(index, wmodel="TF_IDF", num_results=100)
+        retr = pt.BatchRetrieve(index, wmodel="BM25", num_results=1000)
         res = retr.transform(topics)
     except Exception as e:
         print("Exception!!! ", e)
@@ -46,61 +65,81 @@ def close_sentences(document_title, question, sentences):
 
     return res
 
-def tokenize_example(question, context):
-    # tokenize inputs
-    tokenized_inputs = t5_tokenizer(
-        question,
-        context,
-        truncation = 'only_second',
-        add_special_tokens=True,
-        return_overflowing_tokens = True, # if (source_encoding.num_truncated_tokens.item() > 0): !!!!!!!! (future)
-        max_length=512, 
-        padding='max_length', 
-        return_tensors="pt"
-    )
-    
-    return tokenized_inputs.overflowing_tokens[0].tolist()
+def get_text_info(sents_indexes, sentences, question):
+    sentences_final = []
+    for index, sent in enumerate(sentences):
+        if index in sents_indexes:
+            sentences_final.append(sent)
+
+    if len(sentences_final) == 0:
+        print("Nr of final sentences cant be 0!!!!!!!!!!!!!!!!!!!!!!!")
+        sys.exit()
+
+    tokenized_ovf_inputs = tokenize_example(question, ' '.join(sentences_final))
+
+    return len(tokenized_ovf_inputs), sentences_final
+
+def handle_qa(document_title, context, qa_id, question):
+    sentences_final = []
+    sentences = nltk.sent_tokenize(context) # this gives us a list of sentences
+    res = top_results(document_title, question, sentences)
+    if type(res) == int and res == -1:
+        print("Error in value returned!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        sentences_final = sentences
+        #sys.exit()
+    else:
+        if len(res.docno) > 0:
+            list_top_results = [int(elem) for elem in res.docno] # [0,15,4,3,...] real indexes of sentences ordered by tf-idf, bm25, etc, ...
+            sents_indexes = list_top_results
+            
+            num_ovf_tokens = 10000
+            while num_ovf_tokens != 0 and len(sents_indexes) > 0:
+                num_ovf_tokens, sentences_final = get_text_info(sents_indexes, sentences, question)
+                if num_ovf_tokens > 0:
+                    del sents_indexes[-1]
+            if len(list_top_results) != len(sents_indexes):
+                print("!!!!!!!!!!!!!!!!!Aconteceu isto!!!!!!!!!!!!!!!!!!!!!!")
+                print(list_top_results)
+                print(sents_indexes)
+                print("\n")
+                sys.exit()
+
+        else:
+            sentences_final = sentences
+            print("len(res.docno) == 0 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+
+    if qa_id == '56beace93aeaaa14008c91e2':
+        print(sentences,"\n")
+        print(sentences_final)
+        sys.exit()
+
+    print("Nr of original sentences: ", len(sentences))
+    print("Nr of final sentences: ", len(sentences_final))
+
+    return ' '.join(sentences_final)
 
  # Loading JSON files
-with open('../../data/squad_en_original/raw/dev-v1.1.json') as val_json_file:
+file_to_open = '../../data/squad_en_original/raw/dev-v1.1-filtered-' + str(MAX_LEN) + '.json'
+with open(file_to_open) as val_json_file:
     val_data = json.load(val_json_file)
 
-count_qas_filtered = 0
-qas_filtered = []
-
 val_all_compiled = []
-for document in val_data["data"]:  # data -> document
+for document in val_data["data"]:               # data -> document
     document_title = document["title"]          # document -> title
     paragraphs = document["paragraphs"]         # document -> paragraphs
     for para in paragraphs:
         context = para["context"]               # document -> paragraphs[i] -> context
-        #context  = '20th Century Fox, Lionsgate, Paramount Pictures, Universal Studios and Walt Disney Studios paid for movie trailers to be aired during the Super Bowl. Fox paid for Deadpool, X-Men: Apocalypse, Independence Day: Resurgence and Eddie the Eagle, Lionsgate paid for Gods of Egypt, Paramount paid for Teenage Mutant Ninja Turtles: Out of the Shadows and 10 Cloverfield Lane, Universal paid for The Secret Life of Pets and the debut trailer for Jason Bourne and Disney paid for Captain America: Civil War, The Jungle Book and Alice Through the Looking Glass.[citation needed]'
-        sentences = nltk.sent_tokenize(context) # this gives us a list of sentences
         qas = para["qas"]                       # document -> paragraphs[i] -> qas
         for qa in qas:
             qa_id = qa["id"]                    # document -> paragraphs[i] -> qas[i] -> id
             question = qa["question"]           # document -> paragraphs[i] -> qas[i] -> question
             answer = qa["answers"][0]["text"]   # document -> paragraphs[i] -> qas[i] -> answer
-            tokenized_inputs = tokenize_example(question,context)
-            if len(tokenized_inputs) > 0:
-                count_qas_filtered = count_qas_filtered + 1
-                qas_filtered.append(qa_id)
-            #res = close_sentences(document_title, question, sentences)
-            #if type(res) == int and res == -1:
-                #pass
-            #else:
-                #if len(res.docno) >= 3:
-                    #print(res)
-            val_all_compiled.append([document_title, context, qa_id, question, answer])
-val_df = pd.DataFrame(val_all_compiled, columns = ['document_title', 'context', 'qa_id', 'question', 'answer'])
 
-val_data_filtered = val_data
+            new_context = handle_qa(document_title, context, qa_id, question)
+    
+            val_all_compiled.append([document_title, new_context, qa_id, question, answer])
 
-for document in val_data_filtered["data"]:
-    for para in document["paragraphs"] :
-        qas = para["qas"]
-        new_qas = [qa for qa in qas if qa["id"] in qas_filtered]
-        para["qas"] = new_qas
+df_validation_en_filtered = pd.DataFrame(val_all_compiled, columns = ['document_title', 'context', 'qa_id', 'question', 'answer'])
 
-with open('../../data/squad_en_original/raw/dev-v1.1-filtered.json', 'w') as f:
-    json.dump(val_data_filtered, f)
+#df_validation_en_filtered.to_pickle("../../data/squad_en_original/processed/df_validation_en_filtered_128_bm25.pkl")
+print("Pickles were generated from dataframes.")
