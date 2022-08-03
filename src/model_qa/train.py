@@ -202,7 +202,7 @@ def run(args):
 
     # DELETE!!! JUST for FAST TESTING <----
     #####
-    #train_df = train_df.sample(100, random_state=42)
+    #train_df = train_df.sample(50, random_state=42)
     #validation_df = validation_df.sample(10, random_state=42)
     #test_df = validation_df.sample(10, random_state=42)
     #####
@@ -234,11 +234,11 @@ if __name__ == '__main__':
     parser.add_argument('-vp','--validation_df_path', type=str, metavar='', default="../../data/squad_en_original/processed/df_validation_en.pkl", required=False, help='Validation dataframe path.')
     parser.add_argument('-tp','--test_df_path', type=str, metavar='', default="../../data/squad_en_original/processed/df_validation_en.pkl", required=False, help='Test dataframe path.')
 
-    parser.add_argument('-mli','--max_len_input', type=int, metavar='', default=64, required=False, help='Max len input for encoding.')
+    parser.add_argument('-mli','--max_len_input', type=int, metavar='', default=512, required=False, help='Max len input for encoding.')
     parser.add_argument('-mlo','--max_len_output', type=int, metavar='', default=96, required=False, help='Max len output for encoding.')
 
     parser.add_argument('-me','--max_epochs', type=int, default=3, metavar='', required=False, help='Number of max Epochs')
-    parser.add_argument('-bs','--batch_size', type=int, default=4, metavar='', required=False, help='Batch size.')
+    parser.add_argument('-bs','--batch_size', type=int, default=32, metavar='', required=False, help='Batch size.')
     parser.add_argument('-ptc','--patience', type=int, default=3, metavar='', required=False, help='Patience') # it is not being used for now
     parser.add_argument('-o','--optimizer', type=str, default='AdamW', metavar='', required=False, help='Optimizer')
     parser.add_argument('-lr','--learning_rate', type=float, default=1e-4, metavar='', required=False, help='The learning rate to use.')

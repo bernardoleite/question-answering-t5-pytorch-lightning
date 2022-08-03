@@ -1,3 +1,5 @@
+""" Some functions from the official evaluation script for v1.1 of the SQuAD dataset (test purposes)."""
+
 from datetime import datetime
 from collections import Counter
 import re

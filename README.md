@@ -16,7 +16,7 @@ _...As this was the 50th Super Bowl, the league emphasized the "golden anniversa
 
 ## Prerequisites
 ```bash
-Python 3
+Python 3 (tested with version 3.9.13 on Windows 10)
 ```
 
 ## Installation and Configuration
@@ -155,6 +155,20 @@ Example/Demo:
     python eval_qa_squad1.1.py -tfp "../data/squad_en_original/raw/dev-v1.1.json" -pf "../predictions/qa_en_t5_base_512_96_32_10_seed_42/model-epoch=00-val_loss=0.32/predictions.json"
     ``` 
 **Important note**: Set variable **LANG** to **"Portuguese"** or **"English"** for correct answer normalization.
+
+## Checkpoints
+We present the model checkpoints and their corresponding results. We show the results taking into account the full and partial validation dataset. We do this since there is an issue with the Portuguese machine-translated of SQuAD v1.1 dataset. The problem is that 39% of the translated answers are not found in the corresponding translated contexts. This happens because both answers and contexts are translated separately. Therefore, the translation of the individual answer does not always match the answer included in the translated context. Indeed, if we evaluate only the validation set instances where all the answers can be found in the contexts (6486 from 10570 instances), the results are **74.39%** for *Exact Match* and **83.06%** for *F1* score. On the contrary, if we evaluate only the validation set instance where all answers are *not* found in the contexts (4084 from 10570 instances), the results are **26.81%** for *Exact Match* and **55.16%** for *F1* score.
+
+| **Checkpoint Name** |             **Validation File**             | **Model Type** | **Language** | **Exact Match** | **F1 Score** |
+|:-------------------:|:-------------------------------------------:|:--------------:|:------------:|:---------------:|:------------:|
+| epoch=00_loss=0.32  |      Full val. corpus (10570 instances)     |     T5-Base    |    English   |      79.32      |     88.47    |
+| epoch=02_loss=1.12  |           Full val. corpus (10570)          |    PTT5-Base   |  Portuguese  |      56.01      |     72.28    |
+| epoch=02_loss=1.12  | val. corpus w/out translation errors (6486) |    PTT5-Base   |  Portuguese  |      74.39      |     83.06    |
+| epoch=02_loss=1.12  |  val. corpus with translation errors (4084) |    PTT5-Base   |  Portuguese  |      26.81      |     55.16    |
+
+Links for model checkpoint download:
+- [epoch=00_loss=0.32](link)
+- [epoch=02_loss=1.12](link)
 
 ## Issues and Usage Q&A
 To ask questions, report issues or request features, please use the GitHub Issue Tracker.
