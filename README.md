@@ -24,7 +24,7 @@ Python 3 (tested with version 3.9.13 on Windows 10)
     ```python
     git clone https://github.com/bernardoleite/question-answering-t5-pytorch-lightning
     ```
-2. Install the Python packages from [requirements.txt](https://github.com/bernardoleite/question-generation-portuguese/blob/main/requirements.txt). If you are using a virtual environment for Python package management, you can install all python packages needed by using the following bash command:
+2. Install the Python packages from [requirements.txt](https://github.com/bernardoleite/question-answering-t5-pytorch-lightning/blob/main/requirements.txt). If you are using a virtual environment for Python package management, you can install all python packages needed by using the following bash command:
     ```bash
     cd question-answering-t5-pytorch-lightning/
     pip install -r requirements.txt
